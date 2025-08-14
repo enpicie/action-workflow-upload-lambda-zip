@@ -33,7 +33,7 @@ jobs:
 | Name             | Description                                    | Required | Example         |
 | ---------------- | ---------------------------------------------- | -------- | --------------- |
 | source_directory | Path to Lambda source code dir                 | Yes      | `./src`         |
-| zip_name         | Name of zip file                               | Yes      | `my-app-1.0.0`  |
+| zip_name         | Name of zip file (excluding .zip)              | Yes      | `my-app-1.0.0`  |
 | s3_bucket_name   | Name of S3 bucket to upload .zip to            | Yes      | `dev-artifacts` |
 | aws_role_arn     | ARN of IAM Role to assume for S3 access        | Yes      | `secret`        |
 | zip_path         | Path to output the zip (defaults to repo root) | No       | `./build`       |

@@ -51,15 +51,21 @@ runs:
 
     - name: Zip Lambda source code (contents only)
       shell: bash
+      # Safeguard to ensure zip_name ends with .zip without repeating .zip.zip
       run: |
         set -e
         mkdir -p "${{ inputs.zip_path }}"
+        ZIP_NAME="${{ inputs.zip_name }}"
+        [[ "$ZIP_NAME" != *.zip ]] && ZIP_NAME="${ZIP_NAME}.zip"
+        ZIP_PATH="${{ inputs.zip_path }}/${ZIP_NAME}"
+
         echo "📦 Creating ZIP from contents of '${{ inputs.source_directory }}'..."
-        cd "${{ inputs.source_directory }}"
-        zip -r "../${{ inputs.zip_path }}/${{ inputs.zip_name }}" ./*
-        cd -
-        echo "✅ Created: ${PWD}/${{ inputs.zip_path }}/${{ inputs.zip_name }}"
-        ls -lh "${{ inputs.zip_path }}/${{ inputs.zip_name }}"
+        (
+          cd "${{ inputs.source_directory }}"
+          zip -r "../${ZIP_PATH}" .
+        )
+        echo "✅ Created: ${PWD}/${ZIP_PATH}"
+        ls -lh "${ZIP_PATH}"
 
     - name: Upload ZIP to S3
       shell: bash
