@@ -20,7 +20,7 @@ on:
 
 jobs:
   uploadLambdaArtifact:
-    uses: chzylee/action-workflow-upload-lambda-zip@v1.0.0
+    uses: chzylee/action-workflow-upload-lambda-zip@v0.2.0
     with:
       source_directory: ./src # Path relative the repository root
       zip_name: ${{ env.ARTIFACT_NAME }}
@@ -33,11 +33,11 @@ jobs:
 | Name             | Description                                                           | Required | Example         |
 | ---------------- | --------------------------------------------------------------------- | -------- | --------------- |
 | source_directory | Path to Lambda source code dir                                        | Yes      | `./src`         |
+| app_name         | Name of application (artifacts are organized by this in s3 bucket)    | Yes      | `my-app`        |
 | zip_name         | Base name of the zip file (the action will automatically append .zip) | Yes      | `my-app-1.0.0`  |
 | s3_bucket_name   | Name of S3 bucket to upload .zip to                                   | Yes      | `dev-artifacts` |
 | aws_role_arn     | ARN of IAM Role to assume for S3 access                               | Yes      | `secret`        |
 | zip_path         | Path to output the zip (defaults to repo root)                        | No       | `./build`       |
-| s3_key           | Full key for S3 upload (defaults to just zip_name)                    | No       | `secret`        |
 | aws_region       | AWS region for S3 bucket (defaults us-east-2)                         | No       | `us-east-1`     |
 
 ---
