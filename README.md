@@ -1,2 +1,43 @@
 # action-workflow-upload-lambda-zip
+
 Reusable Workflow for GitHub Actions to zip code for AWS Lambda and upload it to S3.
+
+## Usage
+
+**This workflow assumes the given S3 Bucket exists already.**
+
+This repository provides a reusable GitHub Actions workflow for zipping code for an AWS Lambda and uploading the zipped artifact to a given S3 bucket.
+
+### Example
+
+In your repository, create a workflow file (e.g., `.github/workflows/deploy.yml`) with the following content:
+
+```yaml
+name: Deploy Lambda
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    uses: chzylee/action-workflow-upload-lambda-zip@v1.0.0
+    with:
+      source_directory: ./src # Path relative the repository root
+      zip_name: ${{ env.ARTIFACT_NAME }}
+      s3_bucket_name: ${{ env.ARTIFACT_S3_BUCKET }}
+      aws_role_arn: ${{ secrets.S3_AWS_ROLE }}
+```
+
+### Inputs
+
+| Name             | Description                                    | Required | Example         |
+| ---------------- | ---------------------------------------------- | -------- | --------------- |
+| source_directory | Path to Lambda source code dir                 | Yes      | `./src`         |
+| zip_name         | Name of zip file                               | Yes      | `my-app-1.0.0`  |
+| s3_bucket_name   | Name of S3 bucket to upload .zip to            | Yes      | `dev-artifacts` |
+| aws_role_arn     | ARN of IAM Role to assume for S3 access        | Yes      | `secret`        |
+| zip_path         | Path to output the zip (defaults to repo root) | No       | `./build`       |
+| s3_key           | Key for S3 upload (defaults to just zip_name)  | No       | `secret`        |
+| aws_region       | AWS region for S3 bucket (defaults us-east-2)  | No       | `us-east-1`     |
+
+---
