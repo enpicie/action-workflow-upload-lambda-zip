@@ -19,7 +19,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  deploy:
+  uploadLambdaArtifact:
     uses: chzylee/action-workflow-upload-lambda-zip@v1.0.0
     with:
       source_directory: ./src # Path relative the repository root
