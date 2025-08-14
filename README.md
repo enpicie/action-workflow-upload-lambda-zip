@@ -30,14 +30,20 @@ jobs:
 
 ### Inputs
 
-| Name             | Description                                    | Required | Example         |
-| ---------------- | ---------------------------------------------- | -------- | --------------- |
-| source_directory | Path to Lambda source code dir                 | Yes      | `./src`         |
-| zip_name         | Name of zip file (excluding .zip)              | Yes      | `my-app-1.0.0`  |
-| s3_bucket_name   | Name of S3 bucket to upload .zip to            | Yes      | `dev-artifacts` |
-| aws_role_arn     | ARN of IAM Role to assume for S3 access        | Yes      | `secret`        |
-| zip_path         | Path to output the zip (defaults to repo root) | No       | `./build`       |
-| s3_key           | Key for S3 upload (defaults to just zip_name)  | No       | `secret`        |
-| aws_region       | AWS region for S3 bucket (defaults us-east-2)  | No       | `us-east-1`     |
+| Name             | Description                                                           | Required | Example         |
+| ---------------- | --------------------------------------------------------------------- | -------- | --------------- |
+| source_directory | Path to Lambda source code dir                                        | Yes      | `./src`         |
+| zip_name         | Base name of the zip file (the action will automatically append .zip) | Yes      | `my-app-1.0.0`  |
+| s3_bucket_name   | Name of S3 bucket to upload .zip to                                   | Yes      | `dev-artifacts` |
+| aws_role_arn     | ARN of IAM Role to assume for S3 access                               | Yes      | `secret`        |
+| zip_path         | Path to output the zip (defaults to repo root)                        | No       | `./build`       |
+| s3_key           | Key for S3 upload (defaults to just zip_name)                         | No       | `secret`        |
+| aws_region       | AWS region for S3 bucket (defaults us-east-2)                         | No       | `us-east-1`     |
 
 ---
+
+### Recommendation
+
+_Recommended for most cases_ to call this action twice: once to upload a "latest" version, and once more to upload a version archived for your specific app version. i.e. upload artifacts `my-app-latest.zip` and `my-app-1.0.0.zip`.
+
+This makes it simpler for Terraform to access the latest code while still archiving versions that can be used for disaster recovery.
