@@ -23,7 +23,8 @@ jobs:
     uses: chzylee/action-workflow-upload-lambda-zip@v0.2.0
     with:
       source_directory: ./src # Path relative the repository root
-      zip_name: ${{ env.ARTIFACT_NAME }}
+      app_name: ${{ env.APP_NAME }}
+      artifact_name: ${{ env.ARTIFACT_NAME }}-latest
       s3_bucket_name: ${{ env.ARTIFACT_S3_BUCKET }}
       aws_role_arn: ${{ secrets.S3_AWS_ROLE }}
 ```
