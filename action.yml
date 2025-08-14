@@ -1,0 +1,70 @@
+name: 'Upload Lambda ZIP to S3'
+description: 'Zips the contents of a directory containing Lambda source code and uploads it to an S3 bucket'
+
+inputs:
+  source_directory:
+    description: 'Path to the directory containing Lambda source code (zips the contents of this directory)'
+    required: true
+  zip_name:
+    description: 'Desired .zip file name'
+    required: true
+  zip_path:
+    description: 'Path to where .zip file will be created relative to repository root (defaults to repository root)'
+    required: false
+    default: '.'
+  s3_bucket_name:
+    description: 'Name of the S3 bucket to upload the ZIP file to'
+    required: true
+  s3_key:
+    description: 'Key for the S3 object (optional, defaults to zip_name)'
+    required: false
+  aws_region:
+    description: 'AWS region for S3 bucket'
+    required: false
+    default: 'us-east-2'
+  aws_role_arn:
+    description: 'ARN of AWS IAM role to assume for S3 access'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1.7.0
+      with:
+        role-to-assume: ${{ inputs.aws_role_arn }}
+        role-session-name: GitHub_to_AWS_via_FederatedOIDC
+        aws-region: ${{ inputs.aws_region }}
+
+    - name: Set S3 key
+      id: vars
+      shell: bash
+      run: |
+        S3_KEY="${{ inputs.s3_key }}"
+        if [ -z "$S3_KEY" ]; then
+          S3_KEY="${{ inputs.zip_name }}"
+        fi
+        echo "s3_key=$S3_KEY" >> "$GITHUB_OUTPUT"
+
+    - name: Zip Lambda source code (contents only)
+      shell: bash
+      run: |
+        set -e
+        mkdir -p "${{ inputs.zip_path }}"
+        echo "📦 Creating ZIP from contents of '${{ inputs.source_directory }}'..."
+        cd "${{ inputs.source_directory }}"
+        zip -r "../${{ inputs.zip_path }}/${{ inputs.zip_name }}" ./*
+        cd -
+        echo "✅ Created: ${PWD}/${{ inputs.zip_path }}/${{ inputs.zip_name }}"
+        ls -lh "${{ inputs.zip_path }}/${{ inputs.zip_name }}"
+
+    - name: Upload ZIP to S3
+      shell: bash
+      run: |
+        echo "⬆️ Uploading ZIP to s3://${{ inputs.s3_bucket_name }}/${{ steps.vars.outputs.s3_key }}"
+        aws s3 cp "${{ inputs.zip_path }}/${{ inputs.zip_name }}" \
+          "s3://${{ inputs.s3_bucket_name }}/${{ steps.vars.outputs.s3_key }}"
+        echo "✅ Uploaded to S3 bucket: ${{ inputs.s3_bucket_name }}"
