@@ -20,7 +20,7 @@ on:
 
 jobs:
   uploadLambdaArtifact:
-    uses: chzylee/action-workflow-upload-lambda-zip@v0.2.0
+    uses: enpicie/action-workflow-upload-lambda-zip@v0.2.0
     with:
       source_directory: ./src # Path relative the repository root
       app_name: ${{ env.APP_NAME }}
