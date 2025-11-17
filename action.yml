@@ -60,10 +60,14 @@ runs:
         mkdir -p "${{ inputs.zip_path }}"
         ZIP_PATH="${{ inputs.zip_path }}/${{ steps.zip_vars.outputs.zip_file_name }}"
         echo "📦 Creating ZIP from contents of '${{ inputs.source_directory }}'..."
+
+        ORIGINAL_DIR="$(pwd)"
         (
           cd "${{ inputs.source_directory }}"
           zip -r "../${ZIP_PATH}" .
         )
+
+        cd "$ORIGINAL_DIR"
         echo "✅ Created: ${PWD}/${ZIP_PATH}"
         ls -lh "${ZIP_PATH}"
 
