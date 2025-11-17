@@ -62,14 +62,12 @@ runs:
         echo "📦 Creating ZIP from contents of '${{ inputs.source_directory }}'..."
 
         ORIGINAL_DIR="$(pwd)"
-        (
-          cd "${{ inputs.source_directory }}"
-          zip -r "../${ZIP_PATH}" .
-        )
+        cd "${{ inputs.source_directory }}"
+        zip -r "$ORIGINAL_DIR/$ZIP_PATH" .
 
         cd "$ORIGINAL_DIR"
-        echo "✅ Created: ${PWD}/${ZIP_PATH}"
-        ls -lh "${ZIP_PATH}"
+        echo "✅ Created: $PWD/$ZIP_PATH"
+        ls -lh "$ZIP_PATH"
 
     - name: Upload ZIP to S3
       shell: bash
